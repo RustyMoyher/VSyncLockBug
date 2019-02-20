@@ -1,0 +1,58 @@
+# osx noise
+.DS_Store
+profile
+
+# xcode noise
+build/*
+*.mode1
+*.mode1v3
+*.mode2v3
+*.perspective
+*.perspectivev3
+*.pbxuser
+*.xcworkspace
+xcuserdata
+
+# svn & cvs
+.svn
+CVS
+
+
+
+#Visual Studio files
+*.[Oo]bj
+*.aps
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+[Oo]bj/
+[Bb]in
+Debug.win32/
+Release.win32/
+Ankh.NoLoad
+proj.win32/.vs/
+# *.vcxproj.user
+
+# Win10
+# Release/
+# Debug/
+*.VC.db
+*.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+Generated Files/
+proj.win10/Packages/
