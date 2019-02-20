@@ -14,6 +14,8 @@ public:
 	cocos2d::Label *vsyncLabel;
 	cocos2d::Label *totalLabel;
 	
+	cocos2d::Vector<cocos2d::Sprite*> spriteArray;
+	
 	void addItems(int num);
 	void menuAdd1();
 	void menuAdd10();
