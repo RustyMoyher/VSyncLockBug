@@ -1,11 +1,17 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include <iostream>
 
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
+}
+
+void errorCallback(int, const char* err_str)
+{
+	std::cout << "GLFW Error: " << err_str << std::endl;
 }
 
 bool HelloWorld::init()
@@ -17,8 +23,11 @@ bool HelloWorld::init()
 	
 	// Init Vsync
 	vsyncEnabled = true;
-	glfwSwapInterval(1);
 	motionEnabled = false;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+	glfwSetErrorCallback(errorCallback);
+	glfwSwapInterval(1);
+#endif
 
 	// Menu setup
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -54,7 +63,7 @@ bool HelloWorld::init()
 	this->addChild(menuBottom, 100);
 	
 	// Label setup
-	std::string vsyncStr = vsyncEnabled ? "VSync: Enabled" : "VSync: Disabled";
+	std::string vsyncStr = vsyncEnabled ? "VSync: ON" : "VSync: OFF";
 	vsyncLabel = Label::createWithTTF(vsyncStr, "fonts/Marker Felt.ttf", 100);
 	vsyncLabel->setPosition(Vec2(visibleSize.width/2, visibleSize.height - 150) + origin);
 	this->addChild(vsyncLabel, 200);
@@ -145,11 +154,17 @@ void HelloWorld::menuRemoveAll()
 
 void HelloWorld::menuToggleVSync()
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 	vsyncEnabled = !vsyncEnabled;
-	int intervalInt = vsyncEnabled ? 1 : 0;
-	glfwSwapInterval(intervalInt);
-	std::string vsyncStr = vsyncEnabled ? "VSync: Enabled" : "VSync: Disabled";
+	if (vsyncEnabled) {
+		glfwSwapInterval(1);
+	} else {
+		glfwSwapInterval(0);
+	}
+	
+	std::string vsyncStr = vsyncEnabled ? "VSync: ON" : "VSync: OFF";
 	vsyncLabel->setString(vsyncStr);
+#endif
 }
 
 void HelloWorld::menuToggleMotion()
