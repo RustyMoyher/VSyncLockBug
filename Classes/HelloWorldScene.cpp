@@ -18,6 +18,7 @@ bool HelloWorld::init()
 	// Init Vsync
 	vsyncEnabled = true;
 	glfwSwapInterval(1);
+	motionEnabled = false;
 
 	// Menu setup
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -30,6 +31,7 @@ bool HelloWorld::init()
 	auto label1000 = Label::createWithTTF("Add 1000", "fonts/Marker Felt.ttf", buttonSize);
 	auto labelRemove = Label::createWithTTF("Remove All", "fonts/Marker Felt.ttf", buttonSize);
 	auto labelVSync = Label::createWithTTF("Toggle VSync", "fonts/Marker Felt.ttf", buttonSize);
+	auto labelMotion = Label::createWithTTF("Toggle Motion", "fonts/Marker Felt.ttf", buttonSize);
 	auto labelFull = Label::createWithTTF("Toggle Fullscreen", "fonts/Marker Felt.ttf", buttonSize);
 	
 	auto add1Item = MenuItemLabel::create(label1, CC_CALLBACK_0(HelloWorld::menuAdd1, this));
@@ -38,11 +40,12 @@ bool HelloWorld::init()
 	auto add1000Item = MenuItemLabel::create(label1000, CC_CALLBACK_0(HelloWorld::menuAdd1000, this));
 	auto removeAllItem = MenuItemLabel::create(labelRemove, CC_CALLBACK_0(HelloWorld::menuRemoveAll, this));
 	auto toggleVSyncItem = MenuItemLabel::create(labelVSync, CC_CALLBACK_0(HelloWorld::menuToggleVSync, this));
+	auto toggleMotionItem = MenuItemLabel::create(labelMotion, CC_CALLBACK_0(HelloWorld::menuToggleMotion, this));
 	auto toggleFullscreenItem = MenuItemLabel::create(labelFull, CC_CALLBACK_0(HelloWorld::menuToggleFullscreen, this));
 	auto closeItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_0(HelloWorld::menuClose, this));
 	
     auto menuTop = Menu::create(add1Item, add10Item, add100Item, add1000Item, removeAllItem, NULL);
-	auto menuBottom = Menu::create(toggleVSyncItem, toggleFullscreenItem, closeItem, NULL);
+	auto menuBottom = Menu::create(toggleVSyncItem, toggleMotionItem, toggleFullscreenItem, closeItem, NULL);
 	menuTop->setPosition(Vec2(visibleSize.width/2, visibleSize.height / 3 + 40) + origin);
 	menuBottom->setPosition(Vec2(visibleSize.width/2, visibleSize.height / 3 - 60) + origin);
 	menuTop->alignItemsHorizontallyWithPadding(60);
@@ -78,9 +81,48 @@ void HelloWorld::addItems(int num)
 		
 		// Helps make the text easier to read
 		sprite->setColor(Color3B::BLUE);
+		
+		if (motionEnabled) moveSprite(sprite);
 	}
 	
 	totalLabel->setString("Objects: " + std::to_string(spriteArray.size()));
+}
+
+
+void HelloWorld::moveSprite(Sprite *sprite)
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	int minX = 10;
+	int maxX = visibleSize.width - 10;
+	bool left = cocos2d::RandomHelper::random_int(0, 1) == 0;
+	
+	float time = 10.0f;
+	float speed = (maxX - minX) / time;
+	
+	Vec2 goal = Vec2(left ? minX : maxX, sprite->getPositionY());
+	float dist = sprite->getPosition().distance(goal);
+	float fTime = dist / speed;
+	MoveTo *moveFirst = MoveTo::create(fTime, goal);
+	
+	auto repeatBlock = CallFunc::create([sprite, minX, maxX, left, time]()
+	{
+		if (!sprite) return;
+		
+		auto moveLeft = MoveTo::create(time, Vec2(minX, sprite->getPositionY()));
+		auto moveRight = MoveTo::create(time, Vec2(maxX, sprite->getPositionY()));
+		Sequence *seq = nullptr;
+		
+		if (left) {
+			seq = Sequence::create(moveRight, moveLeft, nullptr);
+		} else {
+			seq = Sequence::create(moveLeft, moveRight, nullptr);
+		}
+		RepeatForever *repeat = RepeatForever::create(seq);
+		sprite->runAction(repeat);
+	});
+	
+	Sequence *seq = Sequence::create(moveFirst, repeatBlock, nullptr);
+	sprite->runAction(seq);
 }
 
 void HelloWorld::menuAdd1() { addItems(1); }
@@ -108,6 +150,20 @@ void HelloWorld::menuToggleVSync()
 	glfwSwapInterval(intervalInt);
 	std::string vsyncStr = vsyncEnabled ? "VSync: Enabled" : "VSync: Disabled";
 	vsyncLabel->setString(vsyncStr);
+}
+
+void HelloWorld::menuToggleMotion()
+{
+	motionEnabled = !motionEnabled;
+	if (motionEnabled) {
+		for (auto sprite : spriteArray) {
+			moveSprite(sprite);
+		}
+	} else {
+		for (auto sprite : spriteArray) {
+			sprite->stopAllActions();
+		}
+	}
 }
 
 void HelloWorld::menuToggleFullscreen()

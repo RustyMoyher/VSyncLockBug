@@ -11,19 +11,24 @@ public:
     CREATE_FUNC(HelloWorld);
 	
 	bool vsyncEnabled;
+	bool motionEnabled;
 	cocos2d::Label *vsyncLabel;
 	cocos2d::Label *totalLabel;
 	
 	cocos2d::Vector<cocos2d::Sprite*> spriteArray;
 	
 	void addItems(int num);
+	void moveSprite(cocos2d::Sprite *sprite);
+	
 	void menuAdd1();
 	void menuAdd10();
 	void menuAdd100();
 	void menuAdd1000();
 	void menuRemoveAll();
+	
 	void menuToggleVSync();
 	void menuToggleFullscreen();
+	void menuToggleMotion();
 	void menuClose();
 };
 
