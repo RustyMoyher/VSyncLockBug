@@ -8,10 +8,20 @@ class HelloWorld : public cocos2d::Scene
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();
-    void menuCloseCallback(cocos2d::Ref* pSender);
     CREATE_FUNC(HelloWorld);
 	
+	bool vsyncEnabled;
 	cocos2d::Label *vsyncLabel;
+	cocos2d::Label *totalLabel;
+	
+	void addItems(int num);
+	void menuAdd1();
+	void menuAdd10();
+	void menuAdd100();
+	void menuAdd1000();
+	void menuRemoveAll();
+	void menuToggleVSync();
+	void menuClose();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
