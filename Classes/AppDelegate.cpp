@@ -3,8 +3,7 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size resolutionSize1080p = cocos2d::Size(1920, 1080);
+static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1080);
 
 AppDelegate::AppDelegate() {}
 AppDelegate::~AppDelegate() {}
@@ -15,12 +14,11 @@ void AppDelegate::initGLContextAttrs()
     GLView::setGLContextAttrs(glContextAttrs);
 }
 
-bool AppDelegate::applicationDidFinishLaunching() {
-	designResolutionSize = resolutionSize1080p;
-	
+bool AppDelegate::applicationDidFinishLaunching()
+{
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
-    if(!glview) {
+    if (!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         //glview = GLViewImpl::createWithRect("VSyncLockBug", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		glview = GLViewImpl::createWithFullScreen("VSyncLockBug");
@@ -40,10 +38,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
     return true;
 }
 
-void AppDelegate::applicationDidEnterBackground() {
+void AppDelegate::applicationDidEnterBackground()
+{
     Director::getInstance()->stopAnimation();
 }
 
-void AppDelegate::applicationWillEnterForeground() {
+void AppDelegate::applicationWillEnterForeground()
+{
     Director::getInstance()->startAnimation();
 }

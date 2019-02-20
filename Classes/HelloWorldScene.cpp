@@ -30,6 +30,7 @@ bool HelloWorld::init()
 	auto label1000 = Label::createWithTTF("Add 1000", "fonts/Marker Felt.ttf", buttonSize);
 	auto labelRemove = Label::createWithTTF("Remove All", "fonts/Marker Felt.ttf", buttonSize);
 	auto labelVSync = Label::createWithTTF("Toggle VSync", "fonts/Marker Felt.ttf", buttonSize);
+	auto labelFull = Label::createWithTTF("Toggle Fullscreen", "fonts/Marker Felt.ttf", buttonSize);
 	
 	auto add1Item = MenuItemLabel::create(label1, CC_CALLBACK_0(HelloWorld::menuAdd1, this));
 	auto add10Item = MenuItemLabel::create(label10, CC_CALLBACK_0(HelloWorld::menuAdd10, this));
@@ -37,12 +38,17 @@ bool HelloWorld::init()
 	auto add1000Item = MenuItemLabel::create(label1000, CC_CALLBACK_0(HelloWorld::menuAdd1000, this));
 	auto removeAllItem = MenuItemLabel::create(labelRemove, CC_CALLBACK_0(HelloWorld::menuRemoveAll, this));
 	auto toggleVSyncItem = MenuItemLabel::create(labelVSync, CC_CALLBACK_0(HelloWorld::menuToggleVSync, this));
+	auto toggleFullscreenItem = MenuItemLabel::create(labelFull, CC_CALLBACK_0(HelloWorld::menuToggleFullscreen, this));
 	auto closeItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_0(HelloWorld::menuClose, this));
 	
-    auto menu = Menu::create(add1Item, add10Item, add100Item, add1000Item, removeAllItem, toggleVSyncItem, closeItem, NULL);
-	menu->setPosition(Vec2(visibleSize.width/2, visibleSize.height / 3) + origin);
-	menu->alignItemsHorizontallyWithPadding(60);
-    this->addChild(menu, 100);
+    auto menuTop = Menu::create(add1Item, add10Item, add100Item, add1000Item, removeAllItem, NULL);
+	auto menuBottom = Menu::create(toggleVSyncItem, toggleFullscreenItem, closeItem, NULL);
+	menuTop->setPosition(Vec2(visibleSize.width/2, visibleSize.height / 3 + 40) + origin);
+	menuBottom->setPosition(Vec2(visibleSize.width/2, visibleSize.height / 3 - 60) + origin);
+	menuTop->alignItemsHorizontallyWithPadding(60);
+	menuBottom->alignItemsHorizontallyWithPadding(60);
+    this->addChild(menuTop, 100);
+	this->addChild(menuBottom, 100);
 	
 	// Label setup
 	std::string vsyncStr = vsyncEnabled ? "VSync: Enabled" : "VSync: Disabled";
@@ -51,7 +57,7 @@ bool HelloWorld::init()
 	this->addChild(vsyncLabel, 200);
 	
 	totalLabel = Label::createWithTTF("Objects: 0", "fonts/Marker Felt.ttf", 100);
-	totalLabel->setPosition(Vec2(visibleSize.width/2, visibleSize.height - 280) + origin);
+	totalLabel->setPosition(Vec2(visibleSize.width/2, visibleSize.height - 300) + origin);
 	this->addChild(totalLabel, 200);
 	
     return true;
@@ -102,6 +108,19 @@ void HelloWorld::menuToggleVSync()
 	glfwSwapInterval(intervalInt);
 	std::string vsyncStr = vsyncEnabled ? "VSync: Enabled" : "VSync: Disabled";
 	vsyncLabel->setString(vsyncStr);
+}
+
+void HelloWorld::menuToggleFullscreen()
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+	auto glViewImpl = (GLViewImpl*)Director::getInstance()->getOpenGLView();
+	if (glViewImpl->isFullscreen()) {
+		auto size = glViewImpl->getDesignResolutionSize();
+		glViewImpl->setWindowed(size.width, size.height);
+	} else {
+		glViewImpl->setFullscreen();
+	}
+#endif
 }
 
 void HelloWorld::menuClose()

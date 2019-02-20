@@ -23,6 +23,7 @@ public:
 	void menuAdd1000();
 	void menuRemoveAll();
 	void menuToggleVSync();
+	void menuToggleFullscreen();
 	void menuClose();
 };
 
