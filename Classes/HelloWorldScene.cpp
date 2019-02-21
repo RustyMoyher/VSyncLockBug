@@ -19,6 +19,7 @@ bool HelloWorld::init()
 	vsyncEnabled = true;
 	motionEnabled = false;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+	// GLFW enables VSync by default, but I'm setting it here just to be clear.
 	glfwSwapInterval(1);
 #endif
 
