@@ -1,5 +1,7 @@
 # VSync Lock Bug
 
+Test code for Cocos2d-x issue [#19423](https://github.com/cocos2d/cocos2d-x/issues/19423)
+
 **VSync locking FPS at half under high load**
 
 When under a high workload on Mac or Windows, the FPS will clamp to a dramatically lower number (40, 30, 20, etc). This happens when running in fullscreen and VSync is enabled. If VSync is then disabled, the FPS will increase to a much higher number. (How high depends on the workload.)
