@@ -1,17 +1,11 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include <iostream>
 
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
-}
-
-void errorCallback(int, const char* err_str)
-{
-	std::cout << "GLFW Error: " << err_str << std::endl;
 }
 
 bool HelloWorld::init()
@@ -25,7 +19,6 @@ bool HelloWorld::init()
 	vsyncEnabled = true;
 	motionEnabled = false;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-	glfwSetErrorCallback(errorCallback);
 	glfwSwapInterval(1);
 #endif
 
